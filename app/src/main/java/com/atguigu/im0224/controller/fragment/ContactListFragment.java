@@ -1,9 +1,11 @@
 package com.atguigu.im0224.controller.fragment;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.atguigu.im0224.R;
+import com.atguigu.im0224.controller.activity.AddContactActivity;
 import com.atguigu.im0224.utils.UiUtils;
 import com.hyphenate.easeui.ui.EaseContactListFragment;
 
@@ -23,6 +25,18 @@ public class ContactListFragment extends EaseContactListFragment {
     @Override
     protected void setUpView() {
         super.setUpView();
+        initHeadView();
+
+        titleBar.setRightImageResource(R.drawable.ease_blue_add);
+        titleBar.setRightLayoutClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),AddContactActivity.class));
+            }
+        });
+    }
+
+    private void initHeadView() {
         View headView = View.inflate(getActivity(), R.layout.head_view, null);
         LinearLayout groups = (LinearLayout) headView.findViewById(R.id.ll_groups);
         LinearLayout friends = (LinearLayout) headView.findViewById(R.id.ll_new_friends);
