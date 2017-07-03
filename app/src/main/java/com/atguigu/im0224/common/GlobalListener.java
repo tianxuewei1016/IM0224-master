@@ -21,29 +21,33 @@ public class GlobalListener {
      * 设置全局监听
      */
     EMContactListener emContactListener = new EMContactListener() {
-        //好友请求被同意
+        //收到好友邀请  别人加你
         @Override
-        public void onContactAdded(String s) {
+        public void onContactInvited(String username, String reason) {
 
         }
-        //好友请求被拒绝
+
+        //好友请求被同意  你加别人的时候 别人同意了
         @Override
-        public void onContactDeleted(String s) {
+        public void onContactAgreed(String username) {
 
         }
-        //收到好友邀请
-        @Override
-        public void onContactInvited(String s, String s1) {
 
-        }
         //被删除时回调此方法
         @Override
-        public void onContactAgreed(String s) {
+        public void onContactDeleted(String username) {
 
         }
-        //增加了联系人时回调此方法
+
+        //增加了联系人时回调此方法  当你同意添加好友
         @Override
-        public void onContactRefused(String s) {
+        public void onContactAdded(String username) {
+
+        }
+
+        //好友请求被拒绝  你加别人 别人拒绝了
+        @Override
+        public void onContactRefused(String username) {
 
         }
     };
