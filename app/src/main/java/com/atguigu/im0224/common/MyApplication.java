@@ -1,6 +1,8 @@
 package com.atguigu.im0224.common;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.Handler;
 
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.controller.EaseUI;
@@ -10,6 +12,22 @@ import com.hyphenate.easeui.controller.EaseUI;
  */
 
 public class MyApplication extends Application {
+
+    private static Context context;
+    private static Handler handler;
+    private static int pid;
+
+    public static Context getContext() {
+        return context;
+    }
+
+    public static Handler getHandler() {
+        return handler;
+    }
+
+    public static int getPid() {
+        return pid;
+    }
 
     @Override
     public void onCreate() {
@@ -21,9 +39,13 @@ public class MyApplication extends Application {
         options.setAutoAcceptGroupInvitation(false);
         //是否自动接受邀请
         options.setAcceptInvitationAlways(false);
-        EaseUI.getInstance().init(this,options);
+        EaseUI.getInstance().init(this, options);
 
         //初始化modle
         Modle.getInstance().init(this);
+
+        handler = new Handler();
+        pid = android.os.Process.myPid();
+        context = this;
     }
 }
