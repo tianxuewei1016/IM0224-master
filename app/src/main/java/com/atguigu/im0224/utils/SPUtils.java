@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 
 public class SPUtils {
 
+    public static final String NEW_INVITE = "newInvite";
     private SharedPreferences sp;
 
     private SPUtils() {
@@ -39,5 +40,5 @@ public class SPUtils {
     public Boolean getBolValue(String key) {
         return sp.getBoolean(key, false);
     }
-
+    
 }
