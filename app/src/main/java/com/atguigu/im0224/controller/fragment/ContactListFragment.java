@@ -13,8 +13,8 @@ import android.widget.LinearLayout;
 import com.atguigu.im0224.R;
 import com.atguigu.im0224.common.Constant;
 import com.atguigu.im0224.controller.activity.AddContactActivity;
+import com.atguigu.im0224.controller.activity.InviteActivity;
 import com.atguigu.im0224.utils.SPUtils;
-import com.atguigu.im0224.utils.UiUtils;
 import com.hyphenate.easeui.ui.EaseContactListFragment;
 
 /**
@@ -78,7 +78,7 @@ public class ContactListFragment extends EaseContactListFragment {
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UiUtils.showToast("groups");
+                startActivity(new Intent(getActivity(),InviteActivity.class));
             }
         });
     }
