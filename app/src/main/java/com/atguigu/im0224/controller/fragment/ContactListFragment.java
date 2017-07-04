@@ -1,12 +1,15 @@
 package com.atguigu.im0224.controller.fragment;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -17,6 +20,7 @@ import com.atguigu.im0224.controller.activity.AddContactActivity;
 import com.atguigu.im0224.controller.activity.InviteActivity;
 import com.atguigu.im0224.modle.bean.UserInfo;
 import com.atguigu.im0224.utils.SPUtils;
+import com.atguigu.im0224.utils.UiUtils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.ui.EaseContactListFragment;
@@ -49,8 +53,11 @@ public class ContactListFragment extends EaseContactListFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             //添加或者删除好友以后调用此方法
+
+            refreshData();
         }
     };
+    private List<UserInfo> contacts;
 
     @Override
     protected void initView() {
@@ -80,6 +87,60 @@ public class ContactListFragment extends EaseContactListFragment {
 
         //展示联系人
         showContact();
+
+        //删除联系人
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    return false;
+                }
+                //弹警告
+                showDialog(position);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * 弹警告
+     *
+     * @param position
+     */
+    private void showDialog(final int position) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage("确定要删除吗？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Modle.getInstance().getGlobalThread().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                //网络
+                                UserInfo userInfo = contacts.get(position - 1);
+                                try {
+                                    EMClient.getInstance().contactManager()
+                                            .deleteContact(userInfo.getHxid());
+                                    //本地
+                                    Modle.getInstance().getHelperManager().getContactDAO()
+                                            .deleteContactByHxId(userInfo.getHxid());
+                                    //内存和页面
+                                    if (getActivity() != null) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                refreshData();
+                                            }
+                                        });
+                                    }
+                                } catch (HyphenateException e) {
+                                    e.printStackTrace();
+                                    UiUtils.showToast(e.getMessage());
+                                }
+                            }
+                        });
+                    }
+                }).setNegativeButton("取消", null).show();
     }
 
     /**
@@ -138,8 +199,7 @@ public class ContactListFragment extends EaseContactListFragment {
      */
     private void refreshData() {
         //从数据库获取所有联系人
-        List<UserInfo> contacts
-                = Modle.getInstance().getHelperManager().getContactDAO().getContacts();
+        contacts = Modle.getInstance().getHelperManager().getContactDAO().getContacts();
         //校验
         if (contacts != null) {
             //添加数据
