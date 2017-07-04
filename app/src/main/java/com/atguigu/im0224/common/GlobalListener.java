@@ -18,7 +18,7 @@ import com.hyphenate.chat.EMClient;
 
 public class GlobalListener {
 
-    private final LocalBroadcastManager manager;
+    private LocalBroadcastManager manager;
 
     public GlobalListener(Context context) {
         EMClient.getInstance().contactManager().setContactListener(emContactListener);
@@ -40,6 +40,7 @@ public class GlobalListener {
             InvitationInfo invitationInfo = new InvitationInfo();
             invitationInfo.setReason(reason);
             invitationInfo.setUserInfo(new UserInfo(username, username));
+            invitationInfo.setStatus(InvitationInfo.InvitationStatus.NEW_INVITE);
             //添加InvitationInfo
             Modle.getInstance().getHelperManager()
                     .getInvitationDAO()
@@ -92,7 +93,7 @@ public class GlobalListener {
         @Override
         public void onContactRefused(String username) {
             //保存小红点
-            SPUtils.getSpUtils().save(SPUtils.NEW_INVITE,true);
+            SPUtils.getSpUtils().save(SPUtils.NEW_INVITE, true);
             //发送广播
             manager.sendBroadcast(new Intent(Constant.NEW_INVITE_CHANGE));
         }
