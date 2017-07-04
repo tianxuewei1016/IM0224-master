@@ -78,8 +78,17 @@ public class ContactListFragment extends EaseContactListFragment {
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(),InviteActivity.class));
+                startActivity(new Intent(getActivity(), InviteActivity.class));
             }
         });
+    }
+
+    /**
+     * 当界面再次展示的时候进行回调
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        isShowRedView();
     }
 }
